@@ -1,28 +1,68 @@
-# Examen BentoML
+# Admission Prediction Service
 
-Ce repertoire contient l'architecture basique afin de rendre l'évaluation pour l'examen BentoML.
+BentoML service that predicts the chance of admission of a student to a university
+(linear regression), protected by JWT authentication.
 
-Vous êtes libres d'ajouter d'autres dossiers ou fichiers si vous jugez utile de le faire.
+Endpoints (port 3000):
+- `POST /login`: body `{"credentials": {"username": "user123", "password": "password123"}}`, returns `{"token": "..."}`
+- `POST /predict`: header `Authorization: Bearer <token>`, body `{"input_data": {"gre_score": 337, "toefl_score": 118, "university_rating": 4, "sop": 4.5, "lor": 4.5, "cgpa": 9.65, "research": 1}}`, returns `{"prediction": [0.95...]}`
 
-Voici comment est construit le dossier de rendu de l'examen:
+Demo users: `user123` / `password123` and `user456` / `password456`.
 
-```bash       
-├── examen_bentoml          
-│   ├── data       
-│   │   ├── processed      
-│   │   └── raw           
-│   ├── models      
-│   ├── src       
-│   └── README.md
+## Contents of this archive
+
+- `admission_prediction_service.tar`: Docker image of the service
+- `requirements.txt`: dependencies (used here for the tests)
+- `README.md`: this file
+- `tests/`: pytest tests
+
+## Prerequisites
+
+- Docker, with port 3000 free
+- Python 3.10, 3.11 or 3.12 with the `venv` module
+- `curl`
+
+## Commands
+
+Run these commands in order, from the folder where the archive was extracted.
+
+1. Load the Docker image:
+
+```bash
+docker load -i admission_prediction_service.tar
 ```
 
-Afin de pouvoir commencer le projet vous devez suivre les étapes suivantes:
+2. Run the service:
 
-- Forker le projet sur votre compte github
+```bash
+docker run -d --name admission_prediction_service -p 3000:3000 admission_prediction_service:latest
+```
 
-- Cloner le projet sur votre machine
+3. Wait until the service is ready:
 
-- Récuperer le jeu de données à partir du lien suivant: [Lien de téléchargement]( https://datascientest.s3-eu-west-1.amazonaws.com/examen_bentoml/admissions.csv)
+```bash
+until curl -sf http://127.0.0.1:3000/readyz > /dev/null; do sleep 2; done
+```
 
+4. Create a virtual environment and install the dependencies:
 
-Bon travail!
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+5. Run the tests:
+
+```bash
+pytest -v
+```
+
+6. Stop and remove the container:
+
+```bash
+docker stop admission_prediction_service
+docker rm admission_prediction_service
+```
+
+The tests call the running service over HTTP at `http://127.0.0.1:3000`.
