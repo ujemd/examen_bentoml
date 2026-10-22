@@ -22,6 +22,8 @@ Demo users: `user123` / `password123` and `user456` / `password456`.
 - `curl`
 - Python 3.10, 3.11 or 3.12 with the `venv` module, to run the tests. Python 3.13 or
   later is not supported, because `scikit-learn==1.3.2` has no wheels for it.
+- On Debian or Ubuntu, the `venv` module is a separate package. If `python3 -m venv`
+  fails with an `ensurepip` error, run `sudo apt install python3-venv` first.
 
 The service itself runs inside the Docker image with Python 3.10, so the Python version
 of the host only matters for the tests.
@@ -60,6 +62,9 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+If `python3 -m venv` fails on Debian or Ubuntu, install the package with
+`sudo apt install python3-venv` and run the command again.
 
 5. Run the tests:
 
