@@ -16,11 +16,20 @@ Demo users: `user123` / `password123` and `user456` / `password456`.
 - `README.md`: this file
 - `tests/`: pytest tests
 
-## Prerequisites
+## Prerequisites and versions
 
 - Docker, with port 3000 free
-- Python 3.10, 3.11 or 3.12 with the `venv` module
 - `curl`
+- Python 3.10, 3.11 or 3.12 with the `venv` module, to run the tests. Python 3.13 or
+  later is not supported, because `scikit-learn==1.3.2` has no wheels for it.
+
+The service itself runs inside the Docker image with Python 3.10, so the Python version
+of the host only matters for the tests.
+
+Pinned versions (see `requirements.txt`): bentoml 1.4.35, scikit-learn 1.3.2,
+pandas 2.3.3, numpy 1.26.4, pydantic 2.12.x, pyjwt 2.10.1, pytest 8.3.3,
+requests 2.32.5. The model was trained with scikit-learn 1.3.2, so this version must
+not be changed. Only pytest, requests and pyjwt are needed to run the tests.
 
 ## Commands
 
